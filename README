@@ -1,0 +1,15 @@
+renmod
+
+renmod is a software written in C language allowing to rename an audio module (it, mod, s3m or xm) using the MikMod [1] library.
+
+See the INSTALL file for the instructions on how to build this software from the source code.
+
+See the ChangeLog file for the history of the changes.
+
+See the TODO file for the list of things left to do.
+
+See the COPYING file for the license.
+
+See the AUTHORS file for the contact address.
+
+[1] http://mikmod.shlomifish.org/

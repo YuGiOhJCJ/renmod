@@ -1,2 +1,5 @@
 To build the project type this:
+$ autoreconf -i
+$ ./configure --prefix=/usr
 $ make
+$ make install DESTDIR=/tmp/renmod

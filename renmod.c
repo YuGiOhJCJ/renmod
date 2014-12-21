@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	{
 		fprintf(stderr, "%s:%d: %s (Could not initialize sound, reason: %s)\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, MikMod_strerror(MikMod_errno));
 		MikMod_Exit();
-		exit(EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 	}
 	/* verify the number of arguments */
 	if(argc < 3)

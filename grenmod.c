@@ -3,6 +3,16 @@
 #include <stdio.h> /* for printf and fprintf */
 #include <gtk/gtk.h> /* for GtkWidget */
 #include "librenmod.h" /* for init and rename_module */
+#define GRENMOD_FILE "grenmod.conf"
+#define GRENMOD_GROUP "grenmod"
+#define GRENMOD_KEY "author"
+#define GRENMOD_VALUE "author"
+typedef struct grenmod_struct_quit
+{
+	gchar *path;
+	GKeyFile *key_file;
+	GtkWidget *entry;
+} grenmod_struct_quit_t;
 static void grenmod_callback_menu_item_open(GtkWidget *widget, gpointer data)
 {
 	GtkWidget *entry = (GtkWidget *)data;
@@ -28,6 +38,17 @@ static void grenmod_callback_menu_item_open(GtkWidget *widget, gpointer data)
 	}
 	gtk_widget_destroy(file_chooser_dialog);
 }
+static void grenmod_callback_quit(GtkWidget *widget, gpointer data)
+{
+	/* save */
+	grenmod_struct_quit_t *quit = (grenmod_struct_quit_t*)data;
+	g_key_file_set_value(quit->key_file, GRENMOD_GROUP, GRENMOD_KEY, gtk_entry_get_text(GTK_ENTRY(quit->entry)));
+	gchar *key_file_data = g_key_file_to_data(quit->key_file, NULL, NULL);
+	g_file_set_contents(quit->path, key_file_data, -1, NULL);
+	g_free (key_file_data);
+	/* terminate the GTK+ main loop */
+	gtk_main_quit();
+}
 int main(int argc, char *argv[])
 {
 	/* init */
@@ -36,7 +57,7 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "%s:%d: %s (Could not initialize sound, reason: %s)\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, MikMod_strerror(MikMod_errno));
 		MikMod_Exit();
-		exit(EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 	}
 	/* window */
 	GtkWidget *window;
@@ -67,18 +88,39 @@ int main(int argc, char *argv[])
 	GtkWidget *menu_item_quit;
 	menu_item_quit = gtk_menu_item_new_with_label("Quit");
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu_file), menu_item_quit);
+	/* author */
+	gchar *author;
+	author = NULL;
+	/* path */
+	gchar *path = g_strdup_printf("%s%c%s", g_get_user_config_dir(), G_DIR_SEPARATOR, GRENMOD_FILE);
+	/* key file */
+	GKeyFile *key_file;
+	key_file = g_key_file_new();
+	if(g_key_file_load_from_file(key_file, path, G_KEY_FILE_NONE, NULL) == TRUE)
+		author = g_key_file_get_value(key_file, GRENMOD_GROUP, GRENMOD_KEY, NULL);
 	/* entry */
 	GtkWidget *entry;
 	entry = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(entry), "author");
+	if(author == NULL)
+		gtk_entry_set_text(GTK_ENTRY(entry), GRENMOD_VALUE);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry), author);
 	gtk_box_pack_start(GTK_BOX(box), entry, FALSE, FALSE, 0);
+	/* struct quit */
+	grenmod_struct_quit_t quit;
+	quit.path = path;
+	quit.key_file = key_file;
+	quit.entry = entry;
 	/* connect */
-	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(window, "destroy", G_CALLBACK(grenmod_callback_quit), key_file);
 	g_signal_connect(G_OBJECT(menu_item_open), "activate", G_CALLBACK(grenmod_callback_menu_item_open), entry);
-	g_signal_connect(G_OBJECT(menu_item_quit), "activate", G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(menu_item_quit), "activate", G_CALLBACK(grenmod_callback_quit), &quit);
 	/* main */
 	gtk_widget_show_all(window);
 	gtk_main();
+	/* free */
+	g_free(path);
+	g_key_file_free(key_file);
 	/* give up */
 	MikMod_Exit();
 	exit(EXIT_SUCCESS);

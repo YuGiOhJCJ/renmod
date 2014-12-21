@@ -9,7 +9,7 @@ grenmod_CFLAGS=-Wall -ansi -std=c89 -g @GTK_CFLAGS@
 .PHONY: edit
 TEXTEDITOR=gvim -p
 edit:
-	$(TEXTEDITOR) *.c *.h ChangeLog Makefile.am configure.ac
+	$(TEXTEDITOR) *.c *.h $(dist_doc_DATA) Makefile.am configure.ac
 maintainer-clean-local:
 	rm -rfv aclocal.m4
 	rm -rfv compile

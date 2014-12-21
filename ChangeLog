@@ -1,3 +1,35 @@
+2014-12-21  YuGiOhJCJ  <yugiohjcj@1s.fr>
+
+	* Makefile.am: Modified file (the "edit" target is editing all documentation files).
+
+	* TODO: Modified file (add the "Add a help menu" task).
+
+	* TODO: Modified file (add the "Add a checkbox for saving the author name" task).
+
+	* TODO: Modified file (add the "Add a checkbox for saving the last opened directory" task).
+
+	* TODO: Modified file (add the "Add a button to rename the modules" task).
+
+	* TODO: Modified file (add the "Save the last opened directory" task).
+
+	* renmod.c(main): Modified file (replace "EXIT_SUCCESS" by "EXIT_FAILURE" to return the correct exit status).
+
+	* grenmod.c(main): Modified file (replace "EXIT_SUCCESS" by "EXIT_FAILURE" to return the correct exit status).
+
+	* grenmod.c(main): Modified file (gets the "author" value from the configuration file).
+
+	* grenmod.c(grenmod_callback_quit): Modified file (add this function to save before exit).
+
+	* grenmod.c: Modified file (add the "grenmod_struct_quit_t" type for managing the parameters of the "grenmod_callback_quit" function).
+
+	* grenmod.c: Modified file (add the GRENMOD_FILE global constant).
+
+	* grenmod.c: Modified file (add the GRENMOD_GROUP global constant).
+
+	* grenmod.c: Modified file (add the GRENMOD_KEY global constant).
+
+	* grenmod.c: Modified file (add the GRENMOD_VALUE global constant).
+
 2014-06-19  YuGiOhJCJ  <yugiohjcj@1s.fr>
 
 	* main.c: Renamed file (renmod.c).
